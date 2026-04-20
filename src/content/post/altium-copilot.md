@@ -16,9 +16,9 @@ Hardware engineers don't have reliable equivalents yet. You're working in Altium
 
 Will this always be necessary? Probably not. Models are improving fast — context windows are growing, reasoning is getting better, and maybe one day you'll describe a circuit and Claude will just get it. But that day isn't today. And in the meantime, building structured workflows means you're not waiting. When models do improve, the tooling only gets better alongside them.
 
-## What led me to this
+## How did we get here
 
-Before building anything, I tried everything I could find.
+Before building this, I tried a bunch of things.
 
 **Uploading the netlist to Claude.** This seemed like the obvious move, export the netlist, paste it in, ask questions. For small circuits it actually works. For anything real, it breaks. A complex multi-sheet design produces a netlist that floods the context window. Claude loses the thread, misses cross-sheet connections, and starts confidently answering questions about components it can no longer see. The problem isn't Claude, it's that a raw text dump is the wrong interface for a tool built to reason, not scan.
 
