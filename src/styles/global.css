@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+:root {
+	--font-display: 'Clash Display', system-ui, sans-serif;
+	--font-body: 'Satoshi', system-ui, sans-serif;
+
+	/* Card/surface tokens — light mode */
+	--border-card: rgba(0, 0, 0, 0.08);
+	--surface-card: rgba(255, 255, 255, 0.85);
+	--surface-tag: rgba(20, 184, 166, 0.08);
+	--border-tag: rgba(20, 184, 166, 0.3);
+	--shadow-teal-soft: rgba(20, 184, 166, 0.12);
+}
+/* tailwind to ignore satori generated og-image */
+@source not "../pages/og-image";
+/* config for tailwindcss-typography plugin */
+@config "../../tailwind.config.ts";
+
+/* use a selector-based strategy for dark mode */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* register custom colour properties */
+@property --color-global-bg {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: oklch(98.48% 0 0);
+}
+@property --color-global-text {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: oklch(26.99% 0.0096 235.05);
+}
+@property --color-muted {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: oklch(44.6% 0.03 256.802);
+}
+@property --color-link {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: oklch(60% 0.13 185);
+}
+@property --color-accent {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: oklch(60% 0.13 185);
+}
+@property --color-accent-2 {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: oklch(18.15% 0 0);
+}
+@property --color-quote {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: oklch(60% 0.13 185);
+}
+
+/* you could refactor below to use light-dark(), depending on your target audience */
+@theme {
+	--color-global-bg: oklch(98.48% 0 0);
+	--color-global-text: oklch(26.99% 0.0096 235.05);
+	--color-muted: oklch(44.6% 0.03 256.802);
+	--color-link: oklch(60% 0.13 185);
+	--color-accent: oklch(60% 0.13 185);
+	--color-accent-2: oklch(18.15% 0 0);
+	--color-quote: oklch(60% 0.13 185);
+}
+
+@layer base {
+	html {
+		color-scheme: light dark;
+		accent-color: var(--color-accent);
+		scrollbar-gutter: stable;
+
+		&[data-theme="light"] {
+			color-scheme: light;
+		}
+
+		&[data-theme="dark"] {
+			color-scheme: dark;
+			--color-global-bg: oklch(23.64% 0.0045 248);
+			--color-global-text: oklch(83.54% 0 264);
+			--color-muted: oklch(70.7% 0.022 261.325);
+			--color-link: oklch(72% 0.12 192);
+			--color-accent: oklch(72% 0.12 192);
+			--color-accent-2: oklch(94.66% 0 0);
+			--color-quote: oklch(72% 0.12 192);
+
+			/* Card/surface tokens — dark mode */
+			--border-card: rgba(136, 146, 176, 0.12);
+			--surface-card: rgba(15, 23, 42, 0.7);
+			--surface-tag: rgba(45, 212, 191, 0.08);
+			--border-tag: rgba(45, 212, 191, 0.2);
+			--shadow-teal-soft: rgba(45, 212, 191, 0.1);
+		}
+
+		--color-mode-transition-duration: 300ms;
+		--color-mode-transition-easing: ease-in-out;
+
+		transition:
+			--color-global-bg var(--color-mode-transition-duration) var(--color-mode-transition-easing),
+			--color-global-text var(--color-mode-transition-duration) var(--color-mode-transition-easing),
+			--color-muted var(--color-mode-transition-duration) var(--color-mode-transition-easing),
+			--color-link var(--color-mode-transition-duration) var(--color-mode-transition-easing),
+			--color-accent var(--color-mode-transition-duration) var(--color-mode-transition-easing),
+			--color-accent-2 var(--color-mode-transition-duration) var(--color-mode-transition-easing),
+			--color-quote var(--color-mode-transition-duration) var(--color-mode-transition-easing);
+	}
+
+	body {
+		font-family: var(--font-body);
+	}
+
+	[data-theme="dark"] body {
+		background-image:
+			radial-gradient(ellipse 80% 50% at 15% -5%, rgba(45, 212, 191, 0.07), transparent 60%),
+			radial-gradient(ellipse 60% 40% at 85% 5%, rgba(20, 184, 166, 0.05), transparent 60%);
+	}
+
+	:target {
+		scroll-margin-block: 5ex;
+	}
+
+	@view-transition {
+		navigation: auto;
+	}
+
+	/* Astro image responsive styles, modified from -> https://docs.astro.build/en/guides/images/#responsive-image-styles */
+	:where([data-astro-image]) {
+		object-fit: var(--fit);
+		object-position: var(--pos);
+	}
+	[data-astro-image="full-width"] {
+		width: 100%;
+	}
+	[data-astro-image="constrained"] {
+		max-width: 100%;
+	}
+}
+
+@layer components {
+	@import "./components/admonition.css";
+	@import "./components/github-card.css";
+
+	.cactus-link {
+		@apply hover:decoration-link underline underline-offset-2 hover:decoration-2;
+	}
+
+	.title {
+		@apply text-accent-2 text-2xl font-semibold;
+	}
+}
+
+@utility prose {
+	--tw-prose-body: var(--color-global-text);
+	--tw-prose-bold: var(--color-global-text);
+	--tw-prose-bullets: var(--color-global-text);
+	--tw-prose-code: var(--color-global-text);
+	--tw-prose-headings: var(--color-accent-2);
+	--tw-prose-hr: 0.5px dashed #666;
+	--tw-prose-links: var(--color-global-text);
+	--tw-prose-quotes: var(--color-quote);
+	--tw-prose-th-borders: #666;
+}
