@@ -3,13 +3,6 @@
 :root {
 	--font-display: 'Clash Display', system-ui, sans-serif;
 	--font-body: 'Satoshi', system-ui, sans-serif;
-
-	/* Card/surface tokens — light mode */
-	--border-card: rgba(0, 0, 0, 0.08);
-	--surface-card: rgba(255, 255, 255, 0.85);
-	--surface-tag: rgba(20, 184, 166, 0.08);
-	--border-tag: rgba(20, 184, 166, 0.3);
-	--shadow-teal-soft: rgba(20, 184, 166, 0.12);
 }
 /* tailwind to ignore satori generated og-image */
 @source not "../pages/og-image";
@@ -72,6 +65,13 @@
 		color-scheme: light dark;
 		accent-color: var(--color-accent);
 		scrollbar-gutter: stable;
+
+		/* Card/surface tokens — light mode defaults */
+		--border-card: rgba(0, 0, 0, 0.08);
+		--surface-card: rgba(255, 255, 255, 0.85);
+		--surface-tag: rgba(20, 184, 166, 0.08);
+		--border-tag: rgba(20, 184, 166, 0.3);
+		--shadow-teal-soft: rgba(20, 184, 166, 0.12);
 
 		&[data-theme="light"] {
 			color-scheme: light;
