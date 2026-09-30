@@ -2,6 +2,7 @@
 # SAMPLE (draft).
 title: The Design of Everyday Things
 author: Don Norman
+isbn: "9780465050659"
 read: 2026-03-01
 draft: true
 ---

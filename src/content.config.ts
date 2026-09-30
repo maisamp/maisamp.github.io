@@ -42,12 +42,16 @@ const projects = defineCollection({
 const books = defineCollection({
 	loader: glob({ base: "./src/content/books", pattern: "**/*.md" }),
 	// The review is the body of the file. `read` only sets the order (newest first); it isn't shown.
-	schema: z.object({
-		title: z.string(),
-		author: z.string(),
-		read: z.coerce.date(),
-		draft,
-	}),
+	// Cover: add `isbn` and it's fetched from Open Library, or set `cover: ./covers/name.jpg` to use your own image.
+	schema: ({ image }) =>
+		z.object({
+			title: z.string(),
+			author: z.string(),
+			read: z.coerce.date(),
+			isbn: z.string().optional(),
+			cover: image().optional(),
+			draft,
+		}),
 });
 
 const human = defineCollection({
