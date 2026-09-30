@@ -1,0 +1,120 @@
+---
+import { site, socials } from "../config";
+import Icon from "./Icon.astro";
+---
+
+<footer class="site-footer">
+	<ul class="socials">
+		{
+			socials.map((s) => (
+				<li>
+					<a href={s.href} aria-label={s.label} title={s.label} rel="me noreferrer" target="_blank">
+						<Icon name={s.icon} size={22} />
+					</a>
+				</li>
+			))
+		}
+	</ul>
+	<p>
+		<button class="otter" type="button" aria-label="Pet the otter">🦦</button>
+		© {new Date().getFullYear()} {site.name}
+	</p>
+</footer>
+
+<script>
+	// A small reward for curious people
+	const otter = document.querySelector<HTMLButtonElement>(".otter")!;
+	otter.addEventListener("click", () => {
+		otter.classList.remove("float");
+		void otter.offsetWidth;
+		otter.classList.add("float");
+	});
+</script>
+
+<style>
+	.site-footer {
+		text-align: center;
+		padding: 2rem 1rem 2.5rem;
+		color: var(--muted);
+		font-size: 0.9rem;
+	}
+
+	.socials {
+		list-style: none;
+		display: flex;
+		justify-content: center;
+		gap: 0.9rem;
+		margin: 0 0 1rem;
+		padding: 0;
+	}
+
+	.socials a {
+		display: grid;
+		place-items: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		border-radius: 50%;
+		border: 1px solid var(--line);
+		color: var(--muted);
+		transition:
+			background-color 0.15s,
+			color 0.15s,
+			border-color 0.15s;
+	}
+
+	.socials a:hover {
+		background: var(--accent-fill);
+		border-color: var(--accent-fill);
+		color: var(--on-accent);
+	}
+
+	p {
+		margin: 0;
+	}
+
+	.otter {
+		font-size: 1.25rem;
+		background: none;
+		border: 0;
+		padding: 0 0.25rem;
+		cursor: pointer;
+		vertical-align: -0.15em;
+		display: inline-block;
+	}
+
+	.otter:hover {
+		animation: wiggle 0.5s ease-in-out;
+	}
+
+	.otter.float {
+		animation: backstroke 1.6s ease-in-out;
+	}
+
+	@keyframes wiggle {
+		25% {
+			transform: rotate(-12deg);
+		}
+		75% {
+			transform: rotate(12deg);
+		}
+	}
+
+	/* Otters float on their backs */
+	@keyframes backstroke {
+		20% {
+			transform: rotate(180deg) translateY(0);
+		}
+		40% {
+			transform: rotate(180deg) translateY(4px);
+		}
+		60% {
+			transform: rotate(180deg) translateY(-2px);
+		}
+		80% {
+			transform: rotate(180deg) translateY(3px);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+</style>

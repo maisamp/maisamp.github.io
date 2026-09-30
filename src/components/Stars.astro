@@ -1,0 +1,26 @@
+---
+interface Props {
+	rating: number;
+}
+
+const r = Math.round(Astro.props.rating * 2) / 2;
+const full = Math.floor(r);
+const half = r % 1 !== 0;
+---
+
+<span class="stars" title={`${r} out of 5`}>
+	<span aria-hidden="true">{"★".repeat(full)}{half ? "½" : ""}<span class="off">{"★".repeat(5 - full - (half ? 1 : 0))}</span></span>
+	<span class="visually-hidden">{r} out of 5</span>
+</span>
+
+<style>
+	.stars {
+		color: var(--accent);
+		letter-spacing: 0.08em;
+		font-size: 0.95rem;
+		white-space: nowrap;
+	}
+	.off {
+		color: var(--line);
+	}
+</style>

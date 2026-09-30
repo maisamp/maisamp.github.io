@@ -1,0 +1,39 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { formatDate } from "../utils";
+
+interface Props {
+	posts: CollectionEntry<"blog">[];
+	showDescription?: boolean;
+}
+
+const { posts, showDescription = true } = Astro.props;
+---
+
+<ul class="dated-list">
+	{
+		posts.map((p) => (
+			<li>
+				<time datetime={p.data.publishDate.toISOString()}>{formatDate(p.data.publishDate)}</time>
+				<div>
+					<a class="item-title" href={`/blog/${p.id}/`}>
+						{p.data.title}
+					</a>
+					{p.data.draft && <span class="draft">draft</span>}
+					{showDescription && <p>{p.data.description}</p>}
+				</div>
+			</li>
+		))
+	}
+</ul>
+
+<style>
+	.draft {
+		margin-left: 0.5rem;
+		font-size: 0.75rem;
+		padding: 0.05rem 0.45rem;
+		border-radius: 99px;
+		background: var(--accent-soft);
+		color: var(--accent);
+	}
+</style>

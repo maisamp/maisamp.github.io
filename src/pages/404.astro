@@ -1,0 +1,29 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Not found">
+	<div class="column lost">
+		<p class="otter" aria-hidden="true">🦦</p>
+		<h1 class="page-title">This page swam off.</h1>
+		<p>Try the <a href="/">home page</a> instead.</p>
+	</div>
+</Base>
+
+<style>
+	.lost {
+		text-align: center;
+		padding-top: 2rem;
+	}
+	.otter {
+		font-size: 4rem;
+		margin: 0;
+		display: inline-block;
+		animation: bob 3s ease-in-out infinite;
+	}
+	@keyframes bob {
+		50% {
+			transform: translateY(-8px) rotate(4deg);
+		}
+	}
+</style>

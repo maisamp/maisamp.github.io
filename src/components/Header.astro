@@ -1,0 +1,156 @@
+---
+import { nav, site } from "../config";
+import Icon from "./Icon.astro";
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
+---
+
+<header class="site-header">
+	<button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+		<span class="icon-sun"><Icon name="sun" /></span>
+		<span class="icon-moon"><Icon name="moon" /></span>
+	</button>
+
+	<a class="name" href="/">{site.name}</a>
+
+	<nav aria-label="Main">
+		<ul class="tabs">
+			{
+				nav.map((item) => (
+					<li>
+						<a href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>
+							{item.label}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</nav>
+</header>
+
+<script>
+	const button = document.querySelector<HTMLButtonElement>(".theme-toggle")!;
+	button.addEventListener("click", () => {
+		const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+		document.documentElement.dataset.theme = next;
+		try {
+			localStorage.setItem("theme", next);
+		} catch {}
+	});
+</script>
+
+<style>
+	.site-header {
+		position: relative;
+		text-align: center;
+		padding: 2.5rem 1rem 0;
+	}
+
+	.name {
+		display: inline-block;
+		font-size: clamp(2.6rem, 8.5vw, 4.4rem);
+		font-weight: 380;
+		letter-spacing: -0.01em;
+		line-height: 1.1;
+		color: var(--name);
+		text-decoration: none;
+		margin-bottom: 1rem;
+	}
+
+	.tabs {
+		list-style: none;
+		display: inline-flex;
+		margin: 0;
+		padding: 0;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.tabs li + li {
+		border-left: 1px solid var(--line);
+	}
+
+	.tabs a {
+		display: block;
+		padding: 0.7rem 1.1rem;
+		color: var(--muted);
+		text-decoration: none;
+		font-size: 1rem;
+		transition: color 0.15s;
+	}
+
+	.tabs a:hover {
+		color: var(--heading);
+	}
+
+	.tabs a[aria-current="page"] {
+		color: var(--accent);
+		font-weight: 650;
+	}
+
+	/* Phones: a tidy 3 x 2 grid instead of a row that runs off-screen */
+	@media (max-width: 640px) {
+		.site-header {
+			padding-top: 3.25rem;
+		}
+		.tabs {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			width: 100%;
+			max-width: 420px;
+			border: 1px solid var(--line);
+			border-radius: 10px;
+			overflow: hidden;
+		}
+		.tabs li + li {
+			border-left: 0;
+		}
+		.tabs li:not(:nth-child(3n + 1)) {
+			border-left: 1px solid var(--line);
+		}
+		.tabs li:nth-child(n + 4) {
+			border-top: 1px solid var(--line);
+		}
+		.tabs a {
+			padding: 0.6rem 0.25rem;
+			font-size: 0.95rem;
+		}
+		.tabs a[aria-current="page"] {
+			background: var(--accent-soft);
+		}
+	}
+
+	.theme-toggle {
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+		display: grid;
+		place-items: center;
+		width: 2.5rem;
+		height: 2.5rem;
+		border-radius: 50%;
+		border: 1px solid var(--line);
+		background: transparent;
+		color: var(--muted);
+		cursor: pointer;
+		transition:
+			color 0.15s,
+			border-color 0.15s;
+	}
+
+	.theme-toggle:hover {
+		color: var(--accent);
+		border-color: var(--accent);
+	}
+
+	/* Show the icon for the mode you'd switch to */
+	.icon-sun,
+	.icon-moon {
+		display: grid;
+	}
+
+	:global(:root[data-theme="dark"]) .icon-moon,
+	:global(:root:not([data-theme="dark"])) .icon-sun {
+		display: none;
+	}
+</style>

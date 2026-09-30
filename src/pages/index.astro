@@ -1,0 +1,117 @@
+---
+import { render } from "astro:content";
+import Portrait from "../components/Portrait.astro";
+import PostList from "../components/PostList.astro";
+import Base from "../layouts/Base.astro";
+import { published } from "../utils";
+
+const bios = (await published("bio")).sort((a, b) => a.data.order - b.data.order);
+const rendered = await Promise.all(bios.map(async (b) => ({ ...b, Content: (await render(b)).Content })));
+
+const posts = (await published("blog"))
+	.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
+	.slice(0, 3);
+---
+
+<Base>
+	<div class="about">
+		<div class="text">
+			{
+				rendered.length > 1 && (
+					<div class="seg" role="tablist" aria-label="Bio">
+						{rendered.map((b, i) => (
+							<button
+								type="button"
+								role="tab"
+								id={`tab-${b.id}`}
+								aria-controls={`panel-${b.id}`}
+								aria-selected={i === 0 ? "true" : "false"}
+							>
+								{b.data.label}
+							</button>
+						))}
+					</div>
+				)
+			}
+			{
+				rendered.map((b, i) => (
+					<div class="prose bio" role="tabpanel" id={`panel-${b.id}`} aria-labelledby={`tab-${b.id}`} hidden={i !== 0}>
+						<b.Content />
+					</div>
+				))
+			}
+
+			{
+				posts.length > 0 && (
+					<section>
+						<h2 class="section-title">Latest writing</h2>
+						<PostList posts={posts} showDescription={false} />
+						<p class="more">
+							<a href="/blog/">All posts →</a>
+						</p>
+					</section>
+				)
+			}
+		</div>
+
+		<Portrait />
+	</div>
+</Base>
+
+<script>
+	const tabs = document.querySelectorAll<HTMLButtonElement>('.seg [role="tab"]');
+	tabs.forEach((tab) =>
+		tab.addEventListener("click", () => {
+			tabs.forEach((t) => {
+				const on = t === tab;
+				t.setAttribute("aria-selected", String(on));
+				document.getElementById(t.getAttribute("aria-controls")!)!.hidden = !on;
+			});
+		}),
+	);
+</script>
+
+<style>
+	.about {
+		display: grid;
+		grid-template-columns: minmax(0, 660px) minmax(260px, 380px);
+		justify-content: space-between;
+		gap: 3rem;
+		align-items: start;
+	}
+
+	.about :global(.portrait) {
+		position: sticky;
+		top: 2rem;
+	}
+
+	.bio {
+		min-height: 9rem;
+	}
+
+	.more {
+		margin: 0.75rem 0 0;
+		font-size: 0.95rem;
+	}
+
+	@media (max-width: 900px) {
+		.about {
+			display: flex;
+			flex-direction: column-reverse;
+			max-width: 660px;
+			margin: 0 auto;
+			gap: 0;
+		}
+		.about :global(.portrait) {
+			position: static;
+		}
+		.text {
+			width: 100%;
+		}
+		.seg {
+			display: flex;
+			width: fit-content;
+			margin-inline: auto;
+		}
+	}
+</style>

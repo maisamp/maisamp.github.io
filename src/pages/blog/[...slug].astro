@@ -1,0 +1,49 @@
+---
+import { render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import { formatDate, published } from "../../utils";
+
+export async function getStaticPaths() {
+	const posts = await published("blog");
+	return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const words = post.body?.split(/\s+/).length ?? 0;
+const minutes = Math.max(1, Math.round(words / 230));
+---
+
+<Base title={post.data.title} description={post.data.description}>
+	<article class="column">
+		<a class="back" href="/blog/">← Blog</a>
+		<h1 class="post-title">{post.data.title}</h1>
+		<p class="meta">
+			<time datetime={post.data.publishDate.toISOString()}>{formatDate(post.data.publishDate)}</time> · {minutes} min read
+		</p>
+		<div class="prose">
+			<Content />
+		</div>
+	</article>
+</Base>
+
+<style>
+	.back {
+		font-size: 0.9rem;
+		text-decoration: none;
+	}
+
+	.post-title {
+		font-size: clamp(1.7rem, 4.5vw, 2.3rem);
+		font-weight: 550;
+		margin: 0.75rem 0 0.4rem;
+	}
+
+	.meta {
+		color: var(--muted);
+		font-size: 0.9rem;
+		margin: 0 0 2.25rem;
+		padding-bottom: 1.25rem;
+		border-bottom: 1px solid var(--line);
+	}
+</style>

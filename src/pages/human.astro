@@ -1,0 +1,117 @@
+---
+import { Image } from "astro:assets";
+import { render } from "astro:content";
+import Base from "../layouts/Base.astro";
+import { formatDate, published } from "../utils";
+
+const moments = (await published("human")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const rendered = await Promise.all(moments.map(async (m) => ({ ...m, Content: (await render(m)).Content })));
+---
+
+<Base title="Human" description="Life outside work.">
+	<div class="column wide">
+		<h1 class="page-title">Human</h1>
+		<p class="page-intro">What I get up to when I'm not at a desk.</p>
+
+		{rendered.length === 0 && <p class="empty">Photos coming soon.</p>}
+
+		{
+			rendered.map(({ data, Content }, i) => (
+				<section class:list={["moment", { flip: i % 2 === 1 }]}>
+					<div class:list={["photos", `n${Math.min(data.photos.length, 3)}`]}>
+						{data.photos.slice(0, 3).map((p) => (
+							<Image src={p.src} alt={p.alt} widths={[360, 640, 960]} sizes="(max-width: 760px) 100vw, 560px" />
+						))}
+					</div>
+					<div class="caption">
+						<p class="date">{formatDate(data.date, "month")}</p>
+						<h2>{data.title}</h2>
+						<div class="prose">
+							<Content />
+						</div>
+					</div>
+				</section>
+			))
+		}
+	</div>
+</Base>
+
+<style>
+	.wide {
+		max-width: 980px;
+	}
+
+	.moment {
+		display: grid;
+		grid-template-columns: 1.4fr 1fr;
+		gap: 2.5rem;
+		align-items: center;
+		margin: 0 0 4.5rem;
+	}
+
+	.moment.flip {
+		grid-template-columns: 1fr 1.4fr;
+	}
+
+	.moment.flip .photos {
+		order: 2;
+	}
+
+	.photos {
+		display: grid;
+		gap: 0.75rem;
+	}
+
+	.photos.n2 {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.photos.n3 {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.photos.n3 :global(img:first-child) {
+		grid-column: 1 / -1;
+	}
+
+	.photos :global(img) {
+		width: 100%;
+		height: 100%;
+		max-height: 520px;
+		object-fit: cover;
+		border-radius: 8px;
+		box-shadow: var(--shadow);
+	}
+
+	/* Scrapbook tilt, just a touch */
+	.moment :global(img:nth-child(odd)) {
+		transform: rotate(-0.6deg);
+	}
+	.moment :global(img:nth-child(even)) {
+		transform: rotate(0.8deg);
+	}
+
+	.date {
+		margin: 0;
+		font-size: 0.85rem;
+		font-weight: 650;
+		color: var(--accent);
+	}
+
+	h2 {
+		font-size: 1.35rem;
+		margin: 0.15rem 0 0.6rem;
+	}
+
+	@media (max-width: 760px) {
+		.moment,
+		.moment.flip {
+			grid-template-columns: 1fr;
+			gap: 1.25rem;
+			margin-bottom: 3.5rem;
+		}
+		.moment.flip .photos {
+			order: 0;
+		}
+	}
+</style>

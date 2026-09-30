@@ -1,0 +1,79 @@
+---
+import { getImage } from "astro:assets";
+
+// src/assets/portrait.webp: the tall arch artwork shown beside the bio on wide screens.
+// src/assets/portrait-round.webp: a square head-and-shoulders crop, shown as a circle on phones/tablets.
+const tall = import.meta.glob<{ default: ImageMetadata }>("../assets/portrait.webp", { eager: true });
+const round = import.meta.glob<{ default: ImageMetadata }>("../assets/portrait-round.webp", { eager: true });
+const tallSrc = Object.values(tall)[0]?.default;
+const roundSrc = Object.values(round)[0]?.default;
+
+const alt = "Maisam in front of Stanford Memorial Church, painted";
+const wide = tallSrc && (await getImage({ src: tallSrc, widths: [400, 600, 800, 1200], format: "webp" }));
+const narrow = roundSrc && (await getImage({ src: roundSrc, widths: [240, 480], format: "webp" }));
+---
+
+<figure class="portrait">
+	{
+		wide ? (
+			<picture>
+				{narrow && <source media="(max-width: 900px)" srcset={narrow.srcSet.attribute} sizes="220px" />}
+				<img
+					src={wide.src}
+					srcset={wide.srcSet.attribute}
+					sizes="400px"
+					alt={alt}
+					width={tallSrc.width}
+					height={tallSrc.height}
+					loading="eager"
+					fetchpriority="high"
+				/>
+			</picture>
+		) : (
+			<div class="placeholder" aria-hidden="true">
+				<span>🦦</span>
+			</div>
+		)
+	}
+</figure>
+
+<style>
+	.portrait {
+		margin: 0;
+	}
+
+	.portrait img {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	.placeholder {
+		aspect-ratio: 4 / 5;
+		border-radius: 45% 45% 12px 12px;
+		background: linear-gradient(160deg, var(--surface), var(--rule));
+		border: 1px dashed var(--line);
+		display: grid;
+		place-items: center;
+		font-size: 5rem;
+	}
+
+	/* Tablets and phones: a round head-and-shoulders crop above the bio */
+	@media (max-width: 900px) {
+		.portrait {
+			width: min(220px, 55vw);
+			margin: 0 auto 1.75rem;
+		}
+		.portrait img,
+		.placeholder {
+			aspect-ratio: 1;
+			object-fit: cover;
+			border-radius: 50%;
+			box-shadow: var(--shadow);
+			outline: 4px solid var(--surface);
+		}
+		.placeholder {
+			font-size: 4rem;
+		}
+	}
+</style>

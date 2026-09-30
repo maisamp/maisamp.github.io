@@ -1,0 +1,346 @@
+@import "@fontsource-variable/quicksand";
+
+/* ---------- Palette ---------- */
+
+:root {
+	--bg: #e5e8eb;
+	--surface: #eef1f3;
+	--text: #28435c;
+	--heading: #2f4a62;
+	--name: #3d5870;
+	--muted: #4f6878;
+	--line: #9fb0bb;
+	--rule: #d0d8df;
+	--accent: #066e69;
+	--accent-fill: #0b716c;
+	--on-accent: #ffffff;
+	--accent-soft: rgb(10 158 150 / 0.12);
+	--shadow: 0 1px 2px rgb(40 67 92 / 0.12), 0 6px 18px rgb(40 67 92 / 0.1);
+	color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+	--bg: #0f1a22;
+	--surface: #16242e;
+	--text: #d3dde4;
+	--heading: #e6eef3;
+	--name: #c9d8e2;
+	--muted: #93a6b3;
+	--line: #3f5463;
+	--rule: #22333e;
+	--accent: #2cc4bc;
+	--accent-fill: #2cc4bc;
+	--on-accent: #06201e;
+	--accent-soft: rgb(44 196 188 / 0.14);
+	--shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.35);
+	color-scheme: dark;
+}
+
+/* ---------- Base ---------- */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+	scroll-padding-top: 1rem;
+}
+
+body {
+	margin: 0;
+	min-height: 100dvh;
+	display: flex;
+	flex-direction: column;
+	background: var(--bg);
+	color: var(--text);
+	font-family: "Quicksand Variable", "Quicksand", system-ui, sans-serif;
+	font-size: 1.0625rem;
+	font-weight: 450;
+	line-height: 1.65;
+	transition:
+		background-color 0.25s ease,
+		color 0.25s ease;
+}
+
+main {
+	flex: 1;
+	width: 100%;
+	max-width: 1120px;
+	margin: 0 auto;
+	padding: 2.5rem 1.25rem 4rem;
+}
+
+h1,
+h2,
+h3 {
+	color: var(--heading);
+	font-weight: 550;
+	line-height: 1.25;
+}
+
+a {
+	color: var(--accent);
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
+}
+
+a:hover {
+	text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 3px;
+	border-radius: 4px;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+/* A readable single column, used by most pages */
+.column {
+	max-width: 720px;
+	margin: 0 auto;
+}
+
+.page-title {
+	font-size: 1.75rem;
+	font-weight: 500;
+	margin: 0 0 0.35rem;
+}
+
+.page-intro {
+	color: var(--muted);
+	margin: 0 0 2rem;
+}
+
+.section-title {
+	font-size: 1.35rem;
+	font-weight: 500;
+	margin: 3rem 0 0.25rem;
+	padding-bottom: 0.3rem;
+	border-bottom: 1px solid var(--line);
+}
+
+.empty {
+	color: var(--muted);
+	font-style: italic;
+}
+
+/* ---------- Segmented control (bio toggle) ---------- */
+
+.seg {
+	display: inline-flex;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	overflow: hidden;
+	margin-bottom: 1.5rem;
+}
+
+.seg button {
+	font: inherit;
+	font-size: 0.95rem;
+	background: none;
+	border: 0;
+	color: var(--muted);
+	padding: 0.45rem 1.1rem;
+	cursor: pointer;
+	transition:
+		background-color 0.15s,
+		color 0.15s;
+}
+
+.seg button + button {
+	border-left: 1px solid var(--line);
+}
+
+.seg button[aria-selected="true"] {
+	background: var(--accent-fill);
+	color: var(--on-accent);
+}
+
+.seg button:not([aria-selected="true"]):hover {
+	background: var(--accent-soft);
+	color: var(--heading);
+}
+
+/* ---------- Dated list (posts) ---------- */
+
+.dated-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.dated-list li {
+	display: flex;
+	gap: 1.25rem;
+	align-items: baseline;
+	padding: 0.8rem 0;
+	border-bottom: 1px solid var(--rule);
+}
+
+.dated-list li:last-child {
+	border-bottom: 0;
+}
+
+.dated-list time {
+	flex: 0 0 6.5rem;
+	font-size: 0.85rem;
+	font-weight: 650;
+	color: var(--muted);
+	font-variant-numeric: tabular-nums;
+}
+
+.dated-list .item-title {
+	font-weight: 550;
+	color: var(--heading);
+	text-decoration: none;
+}
+
+.dated-list .item-title:hover {
+	color: var(--accent);
+	text-decoration: underline;
+}
+
+.dated-list p {
+	margin: 0.15rem 0 0;
+	font-size: 0.95rem;
+	color: var(--muted);
+}
+
+@media (max-width: 520px) {
+	.dated-list li {
+		flex-direction: column;
+		gap: 0.1rem;
+	}
+	.dated-list time {
+		flex: none;
+	}
+}
+
+/* ---------- Long-form text (posts, reviews, résumé) ---------- */
+
+.prose {
+	overflow-wrap: break-word;
+}
+
+.prose > :first-child {
+	margin-top: 0;
+}
+
+.prose h2 {
+	font-size: 1.45rem;
+	margin: 2.5rem 0 0.75rem;
+}
+
+.prose h3 {
+	font-size: 1.15rem;
+	margin: 2rem 0 0.5rem;
+}
+
+.prose p,
+.prose ul,
+.prose ol {
+	margin: 0 0 1.1rem;
+}
+
+.prose li + li {
+	margin-top: 0.3rem;
+}
+
+.prose strong {
+	color: var(--heading);
+	font-weight: 650;
+}
+
+.prose img {
+	display: block;
+	margin: 1.75rem auto;
+	border-radius: 8px;
+	box-shadow: var(--shadow);
+}
+
+.prose blockquote {
+	margin: 1.5rem 0;
+	padding: 0.25rem 0 0.25rem 1.1rem;
+	border-left: 3px solid var(--accent);
+	color: var(--muted);
+}
+
+.prose hr {
+	border: 0;
+	border-top: 1px solid var(--line);
+	margin: 2.5rem 0;
+}
+
+.prose :not(pre) > code {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	font-size: 0.85em;
+	background: var(--surface);
+	border: 1px solid var(--rule);
+	padding: 0.1em 0.35em;
+	border-radius: 4px;
+}
+
+.prose pre {
+	font-size: 0.85rem;
+	line-height: 1.6;
+	padding: 1rem 1.1rem;
+	border-radius: 8px;
+	border: 1px solid var(--rule);
+	overflow-x: auto;
+}
+
+.prose table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 1.5rem 0;
+	font-size: 0.95rem;
+	display: block;
+	overflow-x: auto;
+}
+
+.prose th,
+.prose td {
+	text-align: left;
+	padding: 0.55rem 0.75rem;
+	border-bottom: 1px solid var(--rule);
+	vertical-align: top;
+}
+
+.prose th {
+	color: var(--heading);
+	font-weight: 650;
+	border-bottom-color: var(--line);
+}
+
+/* Shiki: swap to the dark palette when the site is in dark mode */
+:root[data-theme="dark"] .astro-code,
+:root[data-theme="dark"] .astro-code span {
+	color: var(--shiki-dark) !important;
+	background-color: var(--shiki-dark-bg) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation: none !important;
+		transition: none !important;
+	}
+}
