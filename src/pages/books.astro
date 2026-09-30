@@ -1,34 +1,23 @@
 ---
 import { render } from "astro:content";
+import Toc from "../components/Toc.astro";
 import Base from "../layouts/Base.astro";
 import { published } from "../utils";
 
 const books = (await published("books")).sort((a, b) => b.data.read.valueOf() - a.data.read.valueOf());
 const rendered = await Promise.all(books.map(async (b) => ({ ...b, Content: (await render(b)).Content })));
+const toc = rendered.map(({ id, data }) => ({ id, text: data.title }));
 ---
 
 <Base title="Books" description="Books I loved.">
-	<div class="shelf">
+	<div class="with-toc">
 		<div class="main">
 			<h1 class="page-title">Books</h1>
 			<p class="page-intro">Books I loved.</p>
 
 			{rendered.length === 0 && <p class="empty">Coming soon.</p>}
 
-			{
-				rendered.length > 1 && (
-					<details class="toc-mobile">
-						<summary>All books ({rendered.length})</summary>
-						<ol>
-							{rendered.map(({ id, data }) => (
-								<li>
-									<a href={`#${id}`}>{data.title}</a>
-								</li>
-							))}
-						</ol>
-					</details>
-				)
-			}
+			{toc.length > 1 && <Toc items={toc} title="On the shelf" variant="inline" />}
 
 			{
 				rendered.map(({ id, data, Content }) => (
@@ -60,72 +49,22 @@ const rendered = await Promise.all(books.map(async (b) => ({ ...b, Content: (awa
 			}
 		</div>
 
-		{
-			rendered.length > 1 && (
-				<nav class="toc" aria-label="Books on this page">
-					<p class="toc-title">On the shelf</p>
-					<ol>
-						{rendered.map(({ id, data }) => (
-							<li>
-								<a href={`#${id}`} data-id={id}>
-									{data.title}
-								</a>
-							</li>
-						))}
-					</ol>
-				</nav>
-			)
-		}
+		{toc.length > 1 && <Toc items={toc} title="On the shelf" variant="side" />}
 	</div>
 </Base>
 
 <script>
-	const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>(".toc a")];
-	const books = [...document.querySelectorAll<HTMLElement>(".book")];
-	// A linked book stays selected in the contents until you scroll yourself
-	let pinned: string | null = null;
-
-	function markCurrent(id: string | undefined) {
-		tocLinks.forEach((a) => (a.dataset.id === id ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current")));
-	}
-
-	function updateCurrent() {
-		if (pinned) return markCurrent(pinned);
-		const atBottom = innerHeight + scrollY >= document.documentElement.scrollHeight - 4;
-		let current = books[0];
-		for (const b of books) if (b.getBoundingClientRect().top <= innerHeight * 0.3) current = b;
-		markCurrent((atBottom ? books.at(-1) : current)?.id);
-	}
-
 	// Highlight the book a link points at, so a shared link lands visibly on it
 	function spotlight(id: string) {
 		const el = document.getElementById(id);
-		if (!el) return;
+		if (!el?.classList.contains("book")) return;
 		el.classList.remove("spotlight");
 		void el.offsetWidth;
 		el.classList.add("spotlight");
-		pinned = id;
-		markCurrent(id);
 	}
 	const fromHash = () => location.hash.length > 1 && spotlight(decodeURIComponent(location.hash.slice(1)));
 	window.addEventListener("hashchange", fromHash);
-	for (const ev of ["wheel", "touchmove", "keydown"]) addEventListener(ev, () => (pinned = null), { passive: true });
-	let queued = false;
-	addEventListener("scroll", () => {
-		if (queued) return;
-		queued = true;
-		requestAnimationFrame(() => {
-			queued = false;
-			updateCurrent();
-		});
-	});
 	fromHash();
-	updateCurrent();
-
-	// Close the phone contents list after picking a book
-	document.querySelectorAll<HTMLAnchorElement>(".toc-mobile a").forEach((a) =>
-		a.addEventListener("click", () => a.closest("details")?.removeAttribute("open")),
-	);
 
 	// Share: the phone share sheet where there is one, otherwise copy the link
 	document.querySelectorAll<HTMLButtonElement>(".share").forEach((btn) =>
@@ -149,23 +88,9 @@ const rendered = await Promise.all(books.map(async (b) => ({ ...b, Content: (awa
 			setTimeout(() => (label.textContent = "Share"), 2000);
 		}),
 	);
-
 </script>
 
 <style>
-	.shelf {
-		display: grid;
-		grid-template-columns: minmax(0, 680px);
-		justify-content: center;
-		gap: 4rem;
-	}
-
-	@media (min-width: 1080px) {
-		.shelf {
-			grid-template-columns: minmax(0, 680px) 220px;
-		}
-	}
-
 	.book {
 		padding: 2rem 1.25rem;
 		margin: 0 -1.25rem;
@@ -250,91 +175,5 @@ const rendered = await Promise.all(books.map(async (b) => ({ ...b, Content: (awa
 
 	.prose :global(p:last-child) {
 		margin-bottom: 0;
-	}
-
-	/* Contents: sticky list on wide screens */
-	.toc {
-		display: none;
-	}
-
-	@media (min-width: 1080px) {
-		.toc {
-			display: block;
-			position: sticky;
-			top: 2rem;
-			align-self: start;
-			margin-top: 5.5rem;
-			max-height: calc(100vh - 4rem);
-			overflow-y: auto;
-		}
-	}
-
-	.toc-title {
-		margin: 0 0 0.6rem;
-		font-size: 0.75rem;
-		font-weight: 700;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--muted);
-	}
-
-	.toc ol,
-	.toc-mobile ol {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
-
-	.toc a {
-		display: block;
-		padding: 0.3rem 0 0.3rem 0.8rem;
-		border-left: 2px solid var(--rule);
-		font-size: 0.9rem;
-		line-height: 1.35;
-		color: var(--muted);
-		text-decoration: none;
-		transition:
-			color 0.15s,
-			border-color 0.15s;
-	}
-
-	.toc a:hover {
-		color: var(--heading);
-	}
-
-	.toc a[aria-current="true"] {
-		color: var(--accent);
-		border-left-color: var(--accent);
-		font-weight: 600;
-	}
-
-	/* Contents: a collapsible list on phones and tablets */
-	.toc-mobile {
-		margin: 0 0 1rem;
-		border: 1px solid var(--line);
-		border-radius: 10px;
-		padding: 0.6rem 1rem;
-	}
-
-	.toc-mobile summary {
-		cursor: pointer;
-		font-weight: 600;
-		color: var(--heading);
-	}
-
-	.toc-mobile ol {
-		margin-top: 0.5rem;
-	}
-
-	.toc-mobile a {
-		display: block;
-		padding: 0.3rem 0;
-		text-decoration: none;
-	}
-
-	@media (min-width: 1080px) {
-		.toc-mobile {
-			display: none;
-		}
 	}
 </style>

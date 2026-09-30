@@ -17,7 +17,7 @@ export const nav = [
 // `icon` must be one of the names in src/components/Icon.astro
 export const socials = [
 	{ label: "GitHub", href: "https://github.com/maisamp", icon: "github" },
-	// { label: "LinkedIn", href: "https://www.linkedin.com/in/…", icon: "linkedin" },
+	{ label: "LinkedIn", href: "https://www.linkedin.com/in/maisam-pyarali/", icon: "linkedin" },
 	// { label: "X", href: "https://x.com/…", icon: "x" },
 	// { label: "Email", href: "mailto:…", icon: "mail" },
 ] as const;

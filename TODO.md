@@ -12,7 +12,7 @@ Placeholders are in for everything below. Tick things off as you send them, and 
 
 ## Content
 
-- [ ] **Social links:** LinkedIn? X? Email? Anything else? (Only GitHub for now.)
+- [x] **Social links:** GitHub and LinkedIn. (Add more any time in `src/config.ts`.)
 - [ ] **"Personal" bio tab:** a few sentences about life outside work, or bullet points and I'll draft it in your voice. (`src/content/bio/2-personal.md`)
 - [ ] **Check the "Professional" bio.** I added a second paragraph about ee-in-a-box. (`src/content/bio/1-professional.md`)
 - [ ] **CV (PDF):** I'll build the résumé page from it and add the download button. The current page is a skeleton with [brackets], and I guessed "Hardware Engineer".

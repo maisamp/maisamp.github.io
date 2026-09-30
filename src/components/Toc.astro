@@ -1,0 +1,185 @@
+---
+// Notion-style contents list. Use it twice per page: once with variant="side"
+// (sticky column on wide screens) and once with variant="inline" (collapsible
+// list at the top on phones and tablets). Each item links to an element id.
+interface Props {
+	items: { id: string; text: string; depth?: number }[];
+	title: string;
+	variant: "side" | "inline";
+}
+
+const { items, title, variant } = Astro.props;
+---
+
+{
+	variant === "side" ? (
+		<nav class="toc-side" aria-label={title} data-toc>
+			<p class="toc-title">{title}</p>
+			<ol>
+				{items.map((i) => (
+					<li class:list={[{ sub: (i.depth ?? 2) > 2 }]}>
+						<a href={`#${i.id}`} data-id={i.id}>
+							{i.text}
+						</a>
+					</li>
+				))}
+			</ol>
+		</nav>
+	) : (
+		<details class="toc-inline">
+			<summary>
+				{title} ({items.length})
+			</summary>
+			<ol>
+				{items.map((i) => (
+					<li class:list={[{ sub: (i.depth ?? 2) > 2 }]}>
+						<a href={`#${i.id}`}>{i.text}</a>
+					</li>
+				))}
+			</ol>
+		</details>
+	)
+}
+
+<script>
+	const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>("[data-toc] a")];
+	const targets = tocLinks.map((a) => document.getElementById(a.dataset.id!)).filter((t): t is HTMLElement => !!t);
+	// A linked item stays selected until you scroll yourself
+	let pinned: string | null = null;
+
+	const markCurrent = (id: string | undefined) =>
+		tocLinks.forEach((a) => (a.dataset.id === id ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current")));
+
+	function update() {
+		if (!targets.length) return;
+		if (pinned) return markCurrent(pinned);
+		const atBottom = innerHeight + scrollY >= document.documentElement.scrollHeight - 4;
+		let current = targets[0];
+		for (const t of targets) if (t.getBoundingClientRect().top <= innerHeight * 0.3) current = t;
+		markCurrent((atBottom ? targets.at(-1) : current)?.id);
+	}
+
+	const fromHash = () => {
+		const id = decodeURIComponent(location.hash.slice(1));
+		if (id && targets.some((t) => t.id === id)) {
+			pinned = id;
+			markCurrent(id);
+		}
+	};
+
+	addEventListener("hashchange", fromHash);
+	for (const ev of ["wheel", "touchmove", "keydown"]) addEventListener(ev, () => (pinned = null), { passive: true });
+	let queued = false;
+	addEventListener("scroll", () => {
+		if (queued) return;
+		queued = true;
+		requestAnimationFrame(() => {
+			queued = false;
+			update();
+		});
+	});
+	fromHash();
+	update();
+
+	// Close the collapsible list after picking an item
+	document.querySelectorAll<HTMLAnchorElement>(".toc-inline a").forEach((a) =>
+		a.addEventListener("click", () => a.closest("details")?.removeAttribute("open")),
+	);
+</script>
+
+<style>
+	ol {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	/* Wide screens: sticky column beside the content */
+	.toc-side {
+		display: none;
+	}
+
+	@media (min-width: 1080px) {
+		.toc-side {
+			display: block;
+			position: sticky;
+			top: 2rem;
+			align-self: start;
+			margin-top: 5.5rem;
+			max-height: calc(100vh - 4rem);
+			overflow-y: auto;
+		}
+	}
+
+	.toc-title {
+		margin: 0 0 0.6rem;
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--muted);
+	}
+
+	.toc-side a {
+		display: block;
+		padding: 0.3rem 0 0.3rem 0.8rem;
+		border-left: 2px solid var(--rule);
+		font-size: 0.9rem;
+		line-height: 1.35;
+		color: var(--muted);
+		text-decoration: none;
+		transition:
+			color 0.15s,
+			border-color 0.15s;
+	}
+
+	.toc-side .sub a {
+		padding-left: 1.6rem;
+		font-size: 0.84rem;
+	}
+
+	.toc-side a:hover {
+		color: var(--heading);
+	}
+
+	.toc-side a[aria-current="true"] {
+		color: var(--accent);
+		border-left-color: var(--accent);
+		font-weight: 600;
+	}
+
+	/* Phones and tablets: collapsible list at the top */
+	.toc-inline {
+		margin: 0 0 1.5rem;
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 0.6rem 1rem;
+	}
+
+	.toc-inline summary {
+		cursor: pointer;
+		font-weight: 600;
+		color: var(--heading);
+	}
+
+	.toc-inline ol {
+		margin-top: 0.5rem;
+	}
+
+	.toc-inline a {
+		display: block;
+		padding: 0.3rem 0;
+		text-decoration: none;
+	}
+
+	.toc-inline .sub a {
+		padding-left: 1rem;
+		font-size: 0.95rem;
+	}
+
+	@media (min-width: 1080px) {
+		.toc-inline {
+			display: none;
+		}
+	}
+</style>

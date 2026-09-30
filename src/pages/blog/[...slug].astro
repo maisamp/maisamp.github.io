@@ -1,5 +1,6 @@
 ---
 import { render } from "astro:content";
+import Toc from "../../components/Toc.astro";
 import Base from "../../layouts/Base.astro";
 import { formatDate, published } from "../../utils";
 
@@ -9,26 +10,37 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+const toc = headings.filter((h) => h.depth <= 3).map((h) => ({ id: h.slug, text: h.text, depth: h.depth }));
+const showToc = toc.filter((h) => h.depth === 2).length >= 3;
 const words = post.body?.split(/\s+/).length ?? 0;
 const minutes = Math.max(1, Math.round(words / 230));
 ---
 
 <Base title={post.data.title} description={post.data.description} image={post.data.cover}>
-	<article class="column">
-		<a class="back" href="/blog/">← Blog</a>
-		<h1 class="post-title">{post.data.title}</h1>
-		<p class="meta">
-			<time datetime={post.data.publishDate.toISOString()}>{formatDate(post.data.publishDate)}</time> · {minutes} min read
-		</p>
-		{post.data.cover && <img class="cover" src={post.data.cover} alt={post.data.coverAlt} width="1200" height="630" />}
-		<div class="prose">
-			<Content />
-		</div>
-	</article>
+	<div class="with-toc">
+		<article>
+			<a class="back" href="/blog/">← Blog</a>
+			<h1 class="post-title">{post.data.title}</h1>
+			<p class="meta">
+				<time datetime={post.data.publishDate.toISOString()}>{formatDate(post.data.publishDate)}</time> · {minutes} min read
+			</p>
+			{post.data.cover && <img class="cover" src={post.data.cover} alt={post.data.coverAlt} width="1200" height="630" />}
+			{showToc && <Toc items={toc} title="On this page" variant="inline" />}
+			<div class="prose">
+				<Content />
+			</div>
+		</article>
+		{showToc && <Toc items={toc} title="On this page" variant="side" />}
+	</div>
 </Base>
 
 <style>
+	.prose :global(h2),
+	.prose :global(h3) {
+		scroll-margin-top: 1.5rem;
+	}
+
 	.back {
 		font-size: 0.9rem;
 		text-decoration: none;
