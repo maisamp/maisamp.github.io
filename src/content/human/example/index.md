@@ -1,6 +1,6 @@
 ---
-# Sample entry (draft). Make a folder per moment, put the photos in it, and list them below.
-title: A sample moment
+# PLACEHOLDER (draft). One folder per moment; put the photos in the folder and list them below.
+title: Placeholder, two photos side by side
 date: 2026-08-15
 photos:
   - src: ./a.jpg
