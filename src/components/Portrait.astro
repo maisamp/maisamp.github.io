@@ -1,7 +1,7 @@
 ---
 import { getImage } from "astro:assets";
 
-// src/assets/portrait.webp: the tall arch artwork shown beside the bio on wide screens.
+// src/assets/portrait.webp: the tall painted portrait shown beside the bio on wide screens.
 // src/assets/portrait-round.webp: a square head-and-shoulders crop, shown as a circle on phones/tablets.
 const tall = import.meta.glob<{ default: ImageMetadata }>("../assets/portrait.webp", { eager: true });
 const round = import.meta.glob<{ default: ImageMetadata }>("../assets/portrait-round.webp", { eager: true });

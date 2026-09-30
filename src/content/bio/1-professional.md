@@ -1,5 +1,5 @@
 ---
-label: What I do
+label: Professional
 order: 1
 ---
 
