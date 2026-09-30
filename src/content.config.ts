@@ -11,6 +11,9 @@ const blog = defineCollection({
 		title: z.string(),
 		description: z.string(),
 		publishDate: z.coerce.date(),
+		// Optional cover shown under the title and used as the link preview, e.g. /assets/post/cover.jpg (1200x630)
+		cover: z.string().optional(),
+		coverAlt: z.string().default(""),
 		draft,
 	}),
 });
@@ -28,7 +31,7 @@ const projects = defineCollection({
 			summary: z.string(),
 			date: z.coerce.date(),
 			// Either a file next to the .md (./thumb.png) or a path in /public (/assets/x.gif — use this for GIFs so they stay animated)
-			image: z.union([image(), z.string()]).optional(),
+			image: z.union([z.string().regex(/^\//), image()]).optional(),
 			imageAlt: z.string().default(""),
 			links: z.array(z.object({ label: z.string(), href: z.string() })).default([]),
 			tags: z.array(z.string()).default([]),

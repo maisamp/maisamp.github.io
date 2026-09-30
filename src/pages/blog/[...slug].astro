@@ -14,13 +14,14 @@ const words = post.body?.split(/\s+/).length ?? 0;
 const minutes = Math.max(1, Math.round(words / 230));
 ---
 
-<Base title={post.data.title} description={post.data.description}>
+<Base title={post.data.title} description={post.data.description} image={post.data.cover}>
 	<article class="column">
 		<a class="back" href="/blog/">← Blog</a>
 		<h1 class="post-title">{post.data.title}</h1>
 		<p class="meta">
 			<time datetime={post.data.publishDate.toISOString()}>{formatDate(post.data.publishDate)}</time> · {minutes} min read
 		</p>
+		{post.data.cover && <img class="cover" src={post.data.cover} alt={post.data.coverAlt} width="1200" height="630" />}
 		<div class="prose">
 			<Content />
 		</div>
@@ -37,6 +38,15 @@ const minutes = Math.max(1, Math.round(words / 230));
 		font-size: clamp(1.7rem, 4.5vw, 2.3rem);
 		font-weight: 550;
 		margin: 0.75rem 0 0.4rem;
+	}
+
+	.cover {
+		display: block;
+		width: 100%;
+		height: auto;
+		border-radius: 10px;
+		box-shadow: var(--shadow);
+		margin: 0 0 2.25rem;
 	}
 
 	.meta {

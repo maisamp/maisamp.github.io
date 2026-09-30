@@ -2,6 +2,8 @@
 title: Stop pasting netlists. Give Claude real access to your Altium project.
 description: AI copilot for hardware design.
 publishDate: 2026-04-19
+cover: /assets/post/cover-schematic.jpg
+coverAlt: Schematic of the U12 buck converter with Claude explaining what it does
 tags:
   - altium
   - mcp

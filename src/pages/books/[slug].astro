@@ -1,0 +1,47 @@
+---
+// A shareable link for each book: /books/<slug>/ shows a proper link preview
+// (book title + the start of the review) and then jumps to that book on /books/.
+import { site } from "../../config";
+import { published } from "../../utils";
+
+export async function getStaticPaths() {
+	const books = await published("books");
+	return books.map((book) => ({ params: { slug: book.id }, props: { book } }));
+}
+
+const { book } = Astro.props;
+const target = `/books/#${book.id}`;
+const title = `${book.data.title} by ${book.data.author}`;
+const plain = (book.body ?? "")
+	.replace(/<!--[\s\S]*?-->/g, "")
+	.replace(/[*_`>#[\]]/g, "")
+	.replace(/\(([^)]*)\)/g, "")
+	.replace(/\s+/g, " ")
+	.trim();
+const excerpt = plain.length > 180 ? `${plain.slice(0, 177).replace(/\s+\S*$/, "")}…` : plain;
+const description = excerpt || `${site.name} on ${book.data.title}.`;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title} · Books · {site.name}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={new URL(target, Astro.site)} />
+		<meta property="og:title" content={`${book.data.title}: ${site.name}'s review`} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={new URL(`/books/${book.id}/`, Astro.site)} />
+		<meta property="og:type" content="article" />
+		<meta property="og:image" content={new URL("/og.jpg", Astro.site)} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta http-equiv="refresh" content={`0; url=${target}`} />
+		<script is:inline define:vars={{ target }}>
+			location.replace(target);
+		</script>
+	</head>
+	<body>
+		<p><a href={target}>{title}</a></p>
+	</body>
+</html>
