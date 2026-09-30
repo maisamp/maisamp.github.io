@@ -1,8 +1,8 @@
 ---
 # SAMPLE (draft: only shows in the preview / `npm run dev`). Copy this file for each book, then delete the samples.
+# Cover: add covers/example-the-soul-of-a-new-machine.jpg (same name as this file).
 title: The Soul of a New Machine
 author: Tracy Kidder
-isbn: "9780316491976"
 read: 2026-06-01
 draft: true
 ---

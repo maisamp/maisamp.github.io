@@ -16,7 +16,7 @@ Everything you'd normally edit lives in `src/content/`. Add `draft: true` to any
 |---|---|---|
 | Blog post | `src/content/blog/my-post.md` | `title`, `description`, `publishDate`. Images/GIFs go in `public/assets/…` |
 | Project | `src/content/projects/name.md` | `title`, `summary`, `date`, `image`, `links`, `tags`. Put the thumbnail next to the `.md` |
-| Book | `src/content/books/title.md` | `title`, `author`, `read` (a date, only used for ordering), `isbn` (cover is fetched automatically) or `cover: ./covers/x.jpg`. The review is the body: a paragraph or two |
+| Book | `src/content/books/title.md` | `title`, `author`, `read` (a date, only used for ordering). The review is the body: a paragraph or two. For a cover, drop an image into `src/content/books/covers/` with the same name, e.g. `title.jpg` |
 | Human | `src/content/human/some-moment/index.md` | One folder per moment, with its photos alongside; list them under `photos` |
 | Bio | `src/content/bio/` | One file per tab of the About toggle |
 | Résumé | `src/content/resume/resume.md` | Put the PDF at `public/resume.pdf` and set `pdf: /resume.pdf` |

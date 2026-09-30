@@ -1,7 +1,9 @@
 ---
 // A shareable link for each book: /books/<slug>/ shows a proper link preview
 // (book title + the start of the review) and then jumps to that book on /books/.
+import { getImage } from "astro:assets";
 import { site } from "../../config";
+import { coverFor } from "../../covers";
 import { published } from "../../utils";
 
 export async function getStaticPaths() {
@@ -20,6 +22,9 @@ const plain = (book.body ?? "")
 	.trim();
 const excerpt = plain.length > 180 ? `${plain.slice(0, 177).replace(/\s+\S*$/, "")}…` : plain;
 const description = excerpt || `${site.name} on ${book.data.title}.`;
+// Use the book's cover as the link preview when there is one
+const cover = coverFor(book.id);
+const image = cover ? new URL((await getImage({ src: cover, width: 600, format: "jpg" })).src, Astro.site) : new URL("/og.jpg", Astro.site);
 ---
 
 <!doctype html>
@@ -34,8 +39,8 @@ const description = excerpt || `${site.name} on ${book.data.title}.`;
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={new URL(`/books/${book.id}/`, Astro.site)} />
 		<meta property="og:type" content="article" />
-		<meta property="og:image" content={new URL("/og.jpg", Astro.site)} />
-		<meta name="twitter:card" content="summary_large_image" />
+		<meta property="og:image" content={image} />
+		<meta name="twitter:card" content={cover ? "summary" : "summary_large_image"} />
 		<meta http-equiv="refresh" content={`0; url=${target}`} />
 		<script is:inline define:vars={{ target }}>
 			location.replace(target);

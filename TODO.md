@@ -16,7 +16,7 @@ Placeholders are in for everything below. Tick things off as you send them, and 
 - [ ] **"Personal" bio tab:** a few sentences about life outside work, or bullet points and I'll draft it in your voice. (`src/content/bio/2-personal.md`)
 - [ ] **Check the "Professional" bio.** I added a second paragraph about ee-in-a-box. (`src/content/bio/1-professional.md`)
 - [ ] **CV (PDF):** I'll build the résumé page from it and add the download button. The current page is a skeleton with [brackets], and I guessed "Hardware Engineer".
-- [ ] **Books:** for each one: title, author, the ISBN (for the cover; I can look it up if you don't have it), and a paragraph or two on why you loved it. (Each gets a share link like `maisamp.github.io/books/shoe-dog/`.)
+- [ ] **Books:** for each one: title, author, a cover image, and a paragraph or two on why you loved it. (Each gets a share link like `maisamp.github.io/books/shoe-dog/`.)
 - [ ] **Human photos:** for each moment: 1–3 photos, a title, the month, and a couple of sentences.
 - [ ] **More projects?** For each: name, one-liner, links, and a screenshot or photo.
 

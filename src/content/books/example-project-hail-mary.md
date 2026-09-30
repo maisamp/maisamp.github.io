@@ -2,7 +2,6 @@
 # SAMPLE (draft).
 title: Project Hail Mary
 author: Andy Weir
-isbn: "9780593135204"
 read: 2025-12-01
 draft: true
 ---
