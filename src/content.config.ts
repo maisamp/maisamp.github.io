@@ -38,18 +38,13 @@ const projects = defineCollection({
 
 const books = defineCollection({
 	loader: glob({ base: "./src/content/books", pattern: "**/*.md" }),
-	schema: ({ image }) =>
-		z.object({
-			title: z.string(),
-			author: z.string(),
-			// Cover is fetched from Open Library by ISBN unless you provide `cover`
-			isbn: z.string().optional(),
-			cover: image().optional(),
-			rating: z.number().min(0).max(5),
-			finished: z.coerce.date(),
-			take: z.string(),
-			draft,
-		}),
+	// The review is the body of the file. `read` only sets the order (newest first); it isn't shown.
+	schema: z.object({
+		title: z.string(),
+		author: z.string(),
+		read: z.coerce.date(),
+		draft,
+	}),
 });
 
 const human = defineCollection({

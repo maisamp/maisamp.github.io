@@ -1,0 +1,69 @@
+---
+import { render } from "astro:content";
+import Base from "../layouts/Base.astro";
+import { published } from "../utils";
+
+const books = (await published("books")).sort((a, b) => b.data.read.valueOf() - a.data.read.valueOf());
+const rendered = await Promise.all(books.map(async (b) => ({ ...b, Content: (await render(b)).Content })));
+---
+
+<Base title="Books" description="Books I loved, and why.">
+	<div class="column">
+		<h1 class="page-title">Books</h1>
+		<p class="page-intro">Books I loved, and why.</p>
+
+		{rendered.length === 0 && <p class="empty">Coming soon.</p>}
+
+		{
+			rendered.map(({ id, data, Content }) => (
+				<article class="book" id={id}>
+					<h2>
+						<a href={`#${id}`}>{data.title}</a>
+					</h2>
+					<p class="author">{data.author}</p>
+					<div class="prose">
+						<Content />
+					</div>
+				</article>
+			))
+		}
+	</div>
+</Base>
+
+<style>
+	.book {
+		padding: 2rem 0;
+		border-top: 1px solid var(--rule);
+	}
+
+	.book:first-of-type {
+		border-top: 0;
+		padding-top: 0.5rem;
+	}
+
+	h2 {
+		font-size: 1.3rem;
+		font-weight: 600;
+		margin: 0;
+		text-wrap: balance;
+	}
+
+	h2 a {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	h2 a:hover {
+		color: var(--accent);
+	}
+
+	.author {
+		margin: 0.1rem 0 0.9rem;
+		color: var(--muted);
+		font-style: italic;
+	}
+
+	.prose :global(p:last-child) {
+		margin-bottom: 0;
+	}
+</style>

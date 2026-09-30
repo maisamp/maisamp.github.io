@@ -1,10 +1,9 @@
 ---
-# PLACEHOLDER (draft: only visible in `npm run dev`). Replace with a book you've read, or delete.
+# SAMPLE (draft).
 title: The Design of Everyday Things
 author: Don Norman
-isbn: "9780465050659"
-rating: 4
-finished: 2026-05-01
-take: "Placeholder take: one line on what stuck with you."
+read: 2026-03-01
 draft: true
 ---
+
+Sample review. One paragraph is plenty. After this book you can't stop noticing doors you have to push that look like pulls, and you start asking the same question of every schematic symbol, connector and test point you place: will the next person understand this without me in the room?
