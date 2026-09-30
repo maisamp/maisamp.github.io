@@ -4,7 +4,7 @@ Placeholders are in for everything below. Tick things off as you send them, and 
 
 ## Blockers (to go live)
 
-- [ ] **Fix GitHub access** for Claude: https://claude.ai/connect-github (reconnect, and make sure the Claude app can see `maisamp.github.io`). Pushes are failing with a 403 until this is done.
+- [x] **Fix GitHub access** for Claude. Done, and the branch is pushed.
 - [ ] **Review the site** once it's pushed to the `claude/tender-noether-2zyist` branch.
 - [ ] **Save the backup zip** I sent in chat.
 - [ ] **Delete the repo, then recreate it empty** with the same name. This clears the 73 inherited contributors. If the Claude app is set to "only selected repositories", add the new repo to it.
@@ -22,6 +22,7 @@ Placeholders are in for everything below. Tick things off as you send them, and 
 
 ## Decisions (optional)
 
+- [ ] **Portrait:** keep the painted church behind you, or go plain (just you, like Marcel's)?
 - [ ] A new name for **Human**? (It's one line in `src/config.ts`.)
 - [ ] OK with the link-preview tagline: *"Engineer in San Francisco. Hardware, with AI in the loop."*? (`public/og.jpg`)
 - [ ] Custom domain (e.g. `maisam.dev`), or stay on `maisamp.github.io`?

@@ -8,7 +8,7 @@ const round = import.meta.glob<{ default: ImageMetadata }>("../assets/portrait-r
 const tallSrc = Object.values(tall)[0]?.default;
 const roundSrc = Object.values(round)[0]?.default;
 
-const alt = "Maisam in front of Stanford Memorial Church, painted";
+const alt = "Painted portrait of Maisam in front of Stanford Memorial Church";
 const wide = tallSrc && (await getImage({ src: tallSrc, widths: [400, 600, 800, 1200], format: "webp" }));
 const narrow = roundSrc && (await getImage({ src: roundSrc, widths: [240, 480], format: "webp" }));
 ---
@@ -21,7 +21,7 @@ const narrow = roundSrc && (await getImage({ src: roundSrc, widths: [240, 480], 
 				<img
 					src={wide.src}
 					srcset={wide.srcSet.attribute}
-					sizes="400px"
+					sizes="460px"
 					alt={alt}
 					width={tallSrc.width}
 					height={tallSrc.height}
